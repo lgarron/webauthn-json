@@ -1,40 +1,81 @@
-# ⚠️ `@github/webauthn-json` is deprecated
+# ⚠️ `@github/webauthn-json` is deprecated ⚠️
 
 As of March 2025, stable versions of all major browsers now support the following methods:
 
 - [`PublicKeyCredential.parseCreationOptionsFromJSON(…)`](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/parseCreationOptionsFromJSON_static)
 - [`PublicKeyCredential.parseRequestOptionsFromJSON(…)`](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/parseCreationOptionsFromJSON_static)
 
-By design, these are compatible with `@github/webauthn-json` encoding, so you can use them as a drop-in substitute. We strongly recommend doing so, since:
+These should be used instead of `@github/webauthn-json`.
+
+## 👉 Use built-in browser methods instead 👈
+
+Here is an example for how to serialize and deserialize JSON for WebAuthn client code without using `@github/webauthn-json`:
+
+```ts
+// Example in TypeScript
+
+const jsonWebAuthnSupport = !!globalThis.PublicKeyCredential?.parseCreationOptionsFromJSON;
+
+async function register() {
+  const publicKey = PublicKeyCredential.parseCreationOptionsFromJSON({ /* … */ });
+  const credential = (await navigator.credentials.create({publicKey})) as PublicKeyCredential;
+  return credential.toJSON();
+}
+
+async function authenticate() {
+  const publicKey = PublicKeyCredential.parseRequestOptionsFromJSON({ /* … */ });
+  const credential = (await navigator.credentials.get({publicKey})) as PublicKeyCredential;
+  return credential.toJSON();
+}
+
+if (jsonWebAuthnSupport) {
+  /* Set up code to call `register()` and `authenticate()`. */
+}
+```
+
+## Reasoning
+
+`@github/webauthn-json` served as an ecosystem prototype of the functionality was [developed into the built-in browser methods](https://github.com/w3c/webauthn/wiki/Explainer:-JSON-Serialization-Methods). The built-in methods are compatible with `@github/webauthn-json` encoding, so you can use them as a drop-in substitute. We strongly recommend doing so, since:
 
 - The browser-native JSON parsing functions are increasingly receiving fields and features (such as user-agent hints and the `prf` extension) that `@github/webauthn-json` will never receive.
 - Removing `@github/webauthn-json` from your codebase will remove code from your authentication pages, reducing load times for your users and reducing the chance you will need to debug issues.
 
+## Fallback (not recommended)
+
 If you need to support older browsers in the short-term, consider loading this library only as a fallback:
 
-```js
+```ts
+// Example in TypeScript
+
 async function register() {
-  const parseCreationOptionsFromJSON =
-  PublicKeyCredential.parseCreationOptionsFromJSON ??
-    /* @type PublicKeyCredential.parseCreationOptionsFromJSON */
-    (await import("@github/webauthn-json/browser-ponyfill")).parseCreationOptionsFromJSON;
+  const parseCreationOptionsFromJSON: typeof PublicKeyCredential.parseCreationOptionsFromJSON =
+    PublicKeyCredential.parseCreationOptionsFromJSON ??
+      (await import("@github/webauthn-json/browser-ponyfill")).parseCreationOptionsFromJSON;
 
   const publicKey = parseCreationOptionsFromJSON({ /* … */ });
-  return navigator.credentials.create({publicKey});
+  const credential = (await navigator.credentials.create({publicKey})) as PublicKeyCredential;
+  return credential.toJSON();
 }
 
 async function authenticate() {
-  const parseRequestOptionsFromJSON =
+  const parseRequestOptionsFromJSON: typeof PublicKeyCredential.parseRequestOptionsFromJSON =
     PublicKeyCredential.parseRequestOptionsFromJSON ??
-      /* @type PublicKeyCredential.parseRequestOptionsFromJSON */
       (await import("@github/webauthn-json/browser-ponyfill")).parseRequestOptionsFromJSON;
 
   const publicKey = parseRequestOptionsFromJSON({ /* … */ });
-  return navigator.credentials.get({publicKey});
+  const credential = (await navigator.credentials.get({publicKey})) as PublicKeyCredential;
+  return credential.toJSON();
 }
 ```
 
+If you think you need such a fallback, consider testing or instrumenting your code to test if this is really needed for the small percentage of affected users.
+
+If you have any other authentication methods available, it is likely that your users will still be able to authenticate without this fallback in place. They will also receive the browser-native functionality the next time their browser updates.
+
 <br>
+
+--------
+
 <br>
 
 This project's old README contents are below:
@@ -42,6 +83,8 @@ This project's old README contents are below:
 <br>
 
 --------
+
+<br>
 
 # `@github/webauthn-json`
 
