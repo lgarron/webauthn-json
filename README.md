@@ -2,9 +2,9 @@
 
 As of March 2025, stable versions of all major browsers now support the following methods:
 
-- [`PublicKeyCredential.parseCreationOptionsFromJSON(…)`](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/parseCreationOptionsFromJSON_static)
-- [`PublicKeyCredential.parseRequestOptionsFromJSON(…)`](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/parseCreationOptionsFromJSON_static)
-- [`PublicKeyCredential` → `.toJSON()`](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential)
+- [`PublicKeyCredential.parseCreationOptionsFromJSON(…)`](https://developer.mozilla.org/docs/Web/API/PublicKeyCredential/parseCreationOptionsFromJSON_static)
+- [`PublicKeyCredential.parseRequestOptionsFromJSON(…)`](https://developer.mozilla.org/docs/Web/API/PublicKeyCredential/parseCreationOptionsFromJSON_static)
+- [`PublicKeyCredential` → `.toJSON()`](https://developer.mozilla.org/docs/Web/API/PublicKeyCredential)
 
 These should be used instead of `@github/webauthn-json`.
 
