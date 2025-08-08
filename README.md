@@ -36,7 +36,7 @@ if (jsonWebAuthnSupport) {
 
 ## Reasoning
 
-`@github/webauthn-json` served as an ecosystem prototype of the functionality was [developed into the built-in browser methods](https://github.com/w3c/webauthn/wiki/Explainer:-JSON-Serialization-Methods). The built-in methods are compatible with `@github/webauthn-json` encoding, so you can use them as a drop-in substitute. We strongly recommend doing so, since:
+`@github/webauthn-json` served as an ecosystem prototype of the functionality that was [developed into the built-in browser methods](https://github.com/w3c/webauthn/wiki/Explainer:-JSON-Serialization-Methods). The built-in methods are compatible with `@github/webauthn-json` encoding, so you can use them as a drop-in substitute. We strongly recommend doing so, since:
 
 - The browser-native JSON parsing functions are already available for the vast majority of users.
 - They are increasingly receiving fields and features (such as user-agent hints and the `prf` extension) that `@github/webauthn-json` will never receive.
